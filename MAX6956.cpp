@@ -41,7 +41,7 @@ void MAX6956::outputDigit(String number)
     }
   }
   // 0x56 is address for ports 22-29
-  // 0x4E is address for ports 14-22
+  // 0x4E is address for ports 14-21
   sendI2C(_addr1, 0x4E, digitBytes[0]); //ports 
   sendI2C(_addr1, 0x56, digitBytes[1]);
   sendI2C(_addr2, 0x4E, digitBytes[2]);
