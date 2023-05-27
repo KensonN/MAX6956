@@ -25,18 +25,31 @@ MAX6956::MAX6956(byte addr1, byte addr2, byte bright)
   sendI2C(_addr2, 0x02, _bright);     
 }
 
-void MAX6956::outputDigit(String number)
+void MAX6956::outputDigit(double inputNumber, int precision)
 {
+  String number = String(inputNumber, precision);
+  // Serial.print("Number: ");
+  // Serial.println(number);
   byte digitBytes[4] = {0x00, 0x00, 0x00, 0x00};
   short digitCount = 4;
   bool sameDigit = false;
   for (short i = number.length()-1; i >= 0; i--) {
     !sameDigit ? digitCount-- : sameDigit = false;
     if (number[i]-'0' >= 0 && number[i]-'0' <= 9) {
-      digitBytes[digitCount] |= digitCodes[number[i]-'0'];
+      if (digitCount % 2 == 0) {
+        digitBytes[digitCount] |= digitCodes2[number[i]-'0'];
+      }
+      else {
+        digitBytes[digitCount] |= digitCodes[number[i]-'0'];
+      }
     }
     else if (number[i] == '.') {
-      digitBytes[digitCount] |= (0b1 << 5);
+      if (digitCount % 2 == 0) {
+        digitBytes[digitCount] |= (0b1 << 5);
+      }
+      else {
+        digitBytes[digitCount] |= (0b1 << 2);
+      }
       sameDigit = true;
     }
   }
